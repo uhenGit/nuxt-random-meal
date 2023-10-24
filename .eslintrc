@@ -1,0 +1,27 @@
+{
+	"extends": [
+		"@nuxt/eslint-config"
+	],
+	"rules": {
+		"array-bracket-spacing": [
+			"error",
+			"always"
+		],
+		"arrow-parens": 1,
+		"indent": [
+			"error",
+			"tab"
+		],
+		"vue/html-indent": [
+			"error",
+			"tab",
+			{
+				"attribute": 1,
+				"closeBracket": 0,
+				"baseIndent": 1,
+				"alignAttributesVertically": true
+			}
+		],
+		"vue/html-closing-bracket-spacing": 0
+	}
+}
