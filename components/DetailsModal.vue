@@ -5,9 +5,11 @@ const { recipe } = defineProps({
 		required: true,
 	},
 });
+const processedInstructions = recipe.strInstructions.split('\r\n');
+const isMealInFavs = isMealInFavorites(recipe.idMeal);
 
 const saveMeal = () => {
-	saveToFavs(recipe);
+	addToFavorites(recipe);
 }
 </script>
 
@@ -50,9 +52,16 @@ const saveMeal = () => {
 								<recipe-ingredients :recipe="recipe"/>
 							</div>
 							<div class="card-text col-md-8 p-4">
-								<!--								hydration text content mismatch-->
-								<div>{{ recipe.strInstructions }}</div>
+								<ol>
+									<li
+										v-for="(step, idx) in processedInstructions"
+										:key="idx"
+									>
+										{{ step }}
+									</li>
+								</ol>
 								<button
+									v-if="!isMealInFavs"
 									id="liveToastBtn"
 									type="button"
 									class="btn btn-primary mt-1 w-100"
@@ -91,7 +100,6 @@ const saveMeal = () => {
 						<div class="container-fluid text-center">
 							<img
 								:src="recipe.strMealThumb"
-								class=""
 								alt="meal thumbnail"
 							>
 						</div>

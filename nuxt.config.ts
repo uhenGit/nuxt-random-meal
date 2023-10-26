@@ -6,6 +6,7 @@ export default defineNuxtConfig({
 	],
 	app: {
 		head: {
+			title: 'Random meal app',
 			link: [
 				{
 					rel: 'stylesheet',

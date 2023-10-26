@@ -9,18 +9,19 @@ defineProps({
 		default: false,
 	},
 });
-// console.log('card: ', recipe);
 </script>
 
 <template>
 	<div
 		class="card mx-2 p-4"
 	>
+		<favorite-icon :recipe="recipe"/>
 		<div class="row g-0">
 			<div class="col-md-4">
 				<img
 					:src="recipe.strMealThumb"
 					class="img-fluid rounded-start"
+					:class="{ 'w-50': tiny }"
 					alt="meal image"
 				>
 			</div>
@@ -34,7 +35,8 @@ defineProps({
 					</template>
 					<button
 						type="button"
-						class="btn btn-info mt-1 w-100"
+						class="btn btn-info w-100"
+						:class="tiny ? 'mt-4' : 'mt-1'"
 						data-bs-toggle="modal"
 						data-bs-target="#recipeDetails"
 					>
