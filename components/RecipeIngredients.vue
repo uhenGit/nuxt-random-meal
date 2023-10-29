@@ -27,7 +27,7 @@ const getRecipeItem = (recipeItem) => {
 		<li
 			v-for="ingredient in recipeIngredients"
 			:key="ingredient.idMeal"
-			class="list-group-item"
+			class="list-group-item fst-italic text-body-secondary"
 		>
 			{{ ingredient }}
 		</li>

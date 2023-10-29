@@ -1,6 +1,6 @@
 <script setup>
-const savedMeals = localStorage.getItem('favoriteMeals');
-const favoriteMeals = JSON.parse(savedMeals) || [];
+// @todo handle refresh page case
+const favoriteMeals = process.client ? JSON.parse(localStorage.getItem('favoriteMeals')) : [];
 </script>
 
 <template>

@@ -1,4 +1,6 @@
 <script setup>
+import { useRoute } from 'vue-router';
+
 defineProps({
 	recipe: {
 		type: Object,
@@ -9,11 +11,13 @@ defineProps({
 		default: false,
 	},
 });
+
+const route = useRoute();
 </script>
 
 <template>
 	<div
-		class="card mx-2 p-4"
+		class="card m-2 p-4"
 	>
 		<favorite-icon :recipe="recipe"/>
 		<div class="row g-0">
@@ -30,19 +34,18 @@ defineProps({
 					<h5 class="card-title">
 						{{ recipe.strMeal }}
 					</h5>
-					<template v-if="!tiny">
+					<template v-if="!tiny && route.name === 'index'">
 						<recipe-ingredients :recipe="recipe"/>
 					</template>
 					<button
 						type="button"
 						class="btn btn-info w-100"
 						:class="tiny ? 'mt-4' : 'mt-1'"
-						data-bs-toggle="modal"
-						data-bs-target="#recipeDetails"
 					>
-						Watch recipe details
+						<NuxtLink :to="`/details/${route.name}/${recipe.idMeal}`">
+							Watch recipe details
+						</NuxtLink>
 					</button>
-					<details-modal :recipe="recipe"/>
 				</div>
 			</div>
 		</div>

@@ -26,16 +26,14 @@
 				<div class="navbar-nav me-auto mb-2 mb-lg-0">
 					<NuxtLink
 						class="nav-link"
-						:class="{ 'active': $route.name === 'index' }"
-						:aria-current="{ 'page': $route.name === 'index' }"
+						active-class="active"
 						to="/"
 					>
 						Home
 					</NuxtLink>
 					<NuxtLink
 						class="nav-link"
-						:class="{ 'active': $route.name === 'favorites' }"
-						:aria-current="{ 'page': $route.name === 'favorites' }"
+						active-class="active"
 						to="/favorites"
 					>
 						Favorites
