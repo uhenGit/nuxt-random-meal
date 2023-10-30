@@ -1,6 +1,14 @@
 <script setup>
-// @todo handle refresh page case
-const favoriteMeals = process.client ? JSON.parse(localStorage.getItem('favoriteMeals')) : [];
+import { ref, onMounted } from "vue";
+
+onMounted(() => getFavoriteMeals());
+
+const favoriteMeals = ref(null);
+const getFavoriteMeals = () => {
+	if (process.client) {
+		favoriteMeals.value = JSON.parse(localStorage.getItem('favoriteMeals'))
+	}
+}
 </script>
 
 <template>
@@ -8,7 +16,7 @@ const favoriteMeals = process.client ? JSON.parse(localStorage.getItem('favorite
 		<h2>Favorites</h2>
 		<div class="container">
 			<h5
-				v-if="favoriteMeals.length === 0"
+				v-if="!favoriteMeals || (favoriteMeals.length === 0)"
 				class="my-4"
 			>
 				You do not have any saved recipes yet
@@ -24,6 +32,7 @@ const favoriteMeals = process.client ? JSON.parse(localStorage.getItem('favorite
 					<recipe-card
 						:recipe="recipe"
 						:tiny="true"
+						@on-change-favorites="getFavoriteMeals"
 					/>
 				</template>
 			</div>

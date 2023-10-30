@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute } from 'vue-router';
 
-defineProps({
+const { recipe, tiny } = defineProps({
 	recipe: {
 		type: Object,
 		required: true,
@@ -12,6 +12,8 @@ defineProps({
 	},
 });
 
+const emit = defineEmits([ 'on-change-favorites' ]);
+
 const route = useRoute();
 </script>
 
@@ -19,14 +21,17 @@ const route = useRoute();
 	<div
 		class="card m-2 p-4"
 	>
-		<favorite-icon :recipe="recipe"/>
+		<favorite-icon
+			:recipe="recipe"
+			@handle-favorites="() => { emit('on-change-favorites') }"
+		/>
 		<div class="row g-0">
 			<div class="col-md-4">
 				<img
 					:src="recipe.strMealThumb"
 					class="img-fluid rounded-start"
 					:class="{ 'w-50': tiny }"
-					alt="meal image"
+					alt="meal thumbnail"
 				>
 			</div>
 			<div class="col-md-8">
@@ -34,7 +39,7 @@ const route = useRoute();
 					<h5 class="card-title">
 						{{ recipe.strMeal }}
 					</h5>
-					<template v-if="!tiny && route.name === 'index'">
+					<template v-if="!tiny && (route.name === 'index') && ('idMeal' in recipe)">
 						<recipe-ingredients :recipe="recipe"/>
 					</template>
 					<button

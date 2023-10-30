@@ -8,36 +8,42 @@ const { recipe } = defineProps({
 		required: true,
 	},
 });
-// @todo reload part to update color
-const isListChanging = ref(false);
 
-const isMealInFavs = isMealInFavorites(recipe.idMeal);
+const emit = defineEmits([ 'handle-favorites' ]);
+
+const isListChanging = ref(false);
 
 const handleFavorites = () => {
 	isListChanging.value = true;
-	if (isMealInFavs) {
+
+	if (isMealInFavorites(recipe.idMeal)) {
 		removeFromFavorites(recipe.idMeal);
+		emit('handle-favorites');
 	} else {
 		addToFavorites(recipe);
 	}
+
 	isListChanging.value = false;
 }
-const iconColor = computed(() => isMealInFavs ? 'color: rgb(255, 0, 0)' : '');
-const iconTitle = computed(() => isMealInFavs ? 'Remove from favorites' : 'Add to favorites');
+const iconColor = () => isMealInFavorites(recipe.idMeal)
+	? 'color: rgb(255, 0, 0); font-size: 2rem; cursor: pointer'
+	: 'font-size: 2rem; cursor: pointer';
+const iconTitle = () => isMealInFavorites(recipe.idMeal) ? 'Remove from favorites' : 'Save to favorites';
 </script>
 
 <template>
 	<!--	tooltip does not work-->
 	<div
+		class="text-end"
 		data-bs-toggle="tooltip"
 		data-bs-placement="bottom"
-		:data-bs-title="iconTitle"
+		:data-bs-title="iconTitle()"
 		@click="handleFavorites"
 	>
 		<i
 			v-if="!isListChanging"
 			class="bi bi-star"
-			:style="iconColor"
+			:style="iconColor()"
 		/>
 	</div>
 </template>

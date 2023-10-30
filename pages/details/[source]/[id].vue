@@ -1,22 +1,27 @@
 <script>
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { addToFavorites, isMealInFavorites, removeFromFavorites } from "~/utils/index.js";
 import { useRandomMeal } from "~/composables/states.js";
 
 const getMealFromFavoritesList = (mealId) => {
-	const savedMeals = JSON.parse(localStorage.getItem('favoriteMeals'));
+	const savedMeals = process.client
+		? JSON.parse(localStorage.getItem('favoriteMeals'))
+		: [];
 
 	return savedMeals.find(({ idMeal }) => idMeal === mealId);
 }
 export default {
+	emits: [ 'on-change-favorites' ],
+
 	setup() {
 		const route = useRoute();
+		const router = useRouter();
 		const prevPage = route.params.source;
 		const recipe = prevPage === 'index'
 			? useRandomMeal().randomMeal
 			: getMealFromFavoritesList(route.params.id);
 
-		return { recipe, prevPage };
+		return { recipe, prevPage, router };
 	},
 
 	data() {
@@ -26,36 +31,46 @@ export default {
 	},
 
 	computed: {
-		isMealInFavs() {
-			return isMealInFavorites(this.recipe.idMeal);
-		},
-
 		processedInstructions() {
-			const matchedString = this.recipe.strInstructions.includes('\r\n\r\n') ? '\r\n\r\n' : '\r\n';
+			const matchedString = this.recipe?.strInstructions?.includes('\r\n\r\n') ? '\r\n\r\n' : '\r\n';
 
-			return this.recipe.strInstructions
-				.split(matchedString)
-				.filter((step) => step !== '');
+			return this.recipe?.strInstructions?.split(matchedString).filter((step) => step !== '');
 		},
+	},
 
-		handleMealButton() {
-			return this.isMealInFavs
-				? 'Remove from favorites'
-				: 'Save to favorites';
-		},
+	mounted() {
+		if (!('idMeal' in this.recipe)) {
+			this.router.push('/');
+		}
 	},
 
 	methods: {
 		handleFavorites() {
 			this.isListChanging = true;
 
-			if (this.isMealInFavs) {
+			if (isMealInFavorites(this.recipe.idMeal)) {
 				removeFromFavorites(this.recipe.idMeal);
+				this.$nextTick(() => {
+					const path = this.prevPage === 'index' ? '/' : `/${this.prevPage}`;
+					this.router.push(path);
+				})
 			} else {
 				addToFavorites(this.recipe);
 			}
 
 			this.isListChanging = false;
+		},
+
+		btnText() {
+			return isMealInFavorites(this.recipe.idMeal)
+				? 'Remove from favorites'
+				: 'Save to favorites';
+		},
+
+		btnColor() {
+			return isMealInFavorites(this.recipe.idMeal)
+				? 'btn-warning'
+				: 'btn-primary';
 		},
 	},
 }
@@ -74,7 +89,11 @@ export default {
 				</a>
 			</small>
 		</h1>
-		<div class="card">
+		<div class="card p-4">
+			<favorite-icon
+				:recipe="recipe"
+				@handle-favorites="() => { $emit('on-change-favorites') }"
+			/>
 			<div class="col">
 				<div class="row g-0">
 					<div class="col-md-4 p-4">
@@ -100,14 +119,14 @@ export default {
 							v-if="!isListChanging"
 							type="button"
 							class="btn mt-1 w-100"
-							:class="isMealInFavs ? 'btn-warning' : 'btn-primary'"
+							:class="btnColor()"
 							@click="handleFavorites"
 						>
-							{{ handleMealButton }}
+							{{ btnText() }}
 						</button>
 					</div>
 				</div>
-				<div class="container-fluid text-center pb-2">
+				<div class="container-fluid text-center">
 					<img
 						:src="recipe.strMealThumb"
 						alt="meal thumbnail"
