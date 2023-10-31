@@ -35,15 +35,19 @@ const iconTitle = () => isMealInFavorites(recipe.idMeal) ? 'Remove from favorite
 	<!--	tooltip does not work-->
 	<div
 		class="text-end"
-		data-bs-toggle="tooltip"
-		data-bs-placement="bottom"
-		:data-bs-title="iconTitle()"
 		@click="handleFavorites"
 	>
-		<i
-			v-if="!isListChanging"
-			class="bi bi-star"
-			:style="iconColor()"
-		/>
+		<button
+			type="button"
+			class="btn"
+			data-bs-toggle="tooltip"
+			:data-bs-title="iconTitle()"
+		>
+			<i
+				v-if="!isListChanging"
+				class="bi bi-star"
+				:style="iconColor()"
+			/>
+		</button>
 	</div>
 </template>

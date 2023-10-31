@@ -129,6 +129,7 @@ export default {
 				<div class="container-fluid text-center">
 					<img
 						:src="recipe.strMealThumb"
+						class="img-fluid rounded-start"
 						alt="meal thumbnail"
 					>
 				</div>

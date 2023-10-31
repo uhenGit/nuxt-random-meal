@@ -12,9 +12,9 @@ const getFavoriteMeals = () => {
 </script>
 
 <template>
-	<div>
-		<h2>Favorites</h2>
-		<div class="container">
+	<div class="container">
+		<h1>Favorites</h1>
+		<div>
 			<h5
 				v-if="!favoriteMeals || (favoriteMeals.length === 0)"
 				class="my-4"
@@ -23,7 +23,6 @@ const getFavoriteMeals = () => {
 			</h5>
 			<div
 				v-else
-				class="row"
 			>
 				<template
 					v-for="recipe in favoriteMeals"
