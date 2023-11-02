@@ -11,7 +11,10 @@ export const removeFromFavorites = (mealId) => {
 }
 
 export const isMealInFavorites = (mealId) => {
-	const savedMeals = process.client ? JSON.parse(localStorage.getItem('favoriteMeals')) : [];
+	const favoriteMeals = process.client && localStorage.getItem('favoriteMeals')
+	const savedMeals = favoriteMeals
+		? JSON.parse(favoriteMeals)
+		: [];
 
 	return !!savedMeals.find(({ idMeal }) => idMeal === mealId);
 }
