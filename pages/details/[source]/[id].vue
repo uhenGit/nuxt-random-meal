@@ -1,14 +1,10 @@
 <script>
 import { useRoute, useRouter } from 'vue-router';
-import { addToFavorites, isMealInFavorites, removeFromFavorites } from "~/utils/index.js";
+import { addToFavorites, isMealInFavorites, removeFromFavorites, savedMeals } from "~/utils/index.js";
 import { useRandomMeal } from "~/composables/states.js";
 
 const getMealFromFavoritesList = (mealId) => {
-	const savedMeals = process.client
-		? JSON.parse(localStorage.getItem('favoriteMeals'))
-		: [];
-
-	return savedMeals.find(({ idMeal }) => idMeal === mealId);
+	return savedMeals().find(({ idMeal }) => idMeal === mealId);
 }
 export default {
 	emits: [ 'on-change-favorites' ],
@@ -77,63 +73,82 @@ export default {
 </script>
 
 <template>
-	<div class="container my-2">
-		<h1 class="my-4">
-			{{ recipe.strMeal }}
-			<small>
-				<a
-					class="text-body-secondary fs-6"
-					:href="recipe.strSource"
+	<div>
+		<template v-if="!recipe">
+			<div class="container my-2">
+				<div
+					class="spinner-grow"
+					style="width: 3rem; height: 3rem"
+					role="status"
 				>
-					Original recipe source
-				</a>
-			</small>
-		</h1>
-		<div class="card p-4">
-			<favorite-icon
-				:recipe="recipe"
-				@handle-favorites="() => { $emit('on-change-favorites') }"
-			/>
-			<div class="col">
-				<div class="row g-0">
-					<div class="col-md-4 p-4">
-						<h3 class="ps-3 fst-italic text-body-secondary">
-							Ingredients:
-						</h3>
-						<recipe-ingredients :recipe="recipe"/>
-					</div>
-					<div class="card-text col-md-8 p-4">
-						<h3 class="ps-3">
-							Steps:
-						</h3>
-						<ol>
-							<li
-								v-for="(step, idx) in processedInstructions"
-								:key="idx"
-								class="pb-3"
-							>
-								{{ step }}
-							</li>
-						</ol>
-						<button
-							v-if="!isListChanging"
-							type="button"
-							class="btn mt-1 w-100"
-							:class="btnColor()"
-							@click="handleFavorites"
-						>
-							{{ btnText() }}
-						</button>
-					</div>
-				</div>
-				<div class="container-fluid text-center">
-					<img
-						:src="recipe.strMealThumb"
-						class="img-fluid rounded-start"
-						alt="meal thumbnail"
+					<span
+						class="visually-hidden"
 					>
+						Loading...
+					</span>
 				</div>
 			</div>
-		</div>
+		</template>
+		<template v-else>
+			<div class="container my-2">
+				<h1 class="my-4">
+					{{ recipe.strMeal }}
+					<small>
+						<a
+							class="text-body-secondary fs-6"
+							:href="recipe.strSource"
+						>
+							Original recipe source
+						</a>
+					</small>
+				</h1>
+				<div class="card p-4">
+					<favorite-icon
+						:recipe="recipe"
+						@handle-favorites="() => { $emit('on-change-favorites') }"
+					/>
+					<div class="col">
+						<div class="row g-0">
+							<div class="col-md-4 p-4">
+								<h3 class="ps-3 fst-italic text-body-secondary">
+									Ingredients:
+								</h3>
+								<recipe-ingredients :recipe="recipe"/>
+							</div>
+							<div class="card-text col-md-8 p-4">
+								<h3 class="ps-3">
+									Steps:
+								</h3>
+								<ol>
+									<li
+										v-for="(step, idx) in processedInstructions"
+										:key="idx"
+										class="pb-3"
+									>
+										{{ step }}
+									</li>
+								</ol>
+								<button
+									v-if="!isListChanging"
+									type="button"
+									class="btn mt-1 w-100"
+									:class="btnColor()"
+									@click="handleFavorites"
+								>
+									{{ btnText() }}
+								</button>
+							</div>
+						</div>
+						<div class="container-fluid text-center">
+							<img
+								:src="recipe.strMealThumb"
+								class="img-fluid rounded-start"
+								alt="meal thumbnail"
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</template>
 	</div>
 </template>

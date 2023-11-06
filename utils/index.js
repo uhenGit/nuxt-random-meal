@@ -1,4 +1,4 @@
-const savedMeals = () => {
+export const savedMeals = () => {
 	const favoriteMeals = process.client && localStorage.getItem('favoriteMeals');
 
 	return favoriteMeals

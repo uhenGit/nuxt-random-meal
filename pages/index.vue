@@ -19,7 +19,7 @@ const { pending, error } = useAsyncData('meal', async () => {
 	<div class="container-fluid">
 		<h1>Random recipe app</h1>
 		<div
-			v-if="pending.value"
+			v-if="pending"
 			class="d-flex justify-content-center"
 		>
 			<div
