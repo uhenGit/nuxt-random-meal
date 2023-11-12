@@ -1,19 +1,42 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { savedMeals } from '~/utils';
 
-onMounted(() => getFavoriteMeals());
+const meals = ref([]);
+const searchValue = ref('');
 
-const favoriteMeals = ref(null);
-const getFavoriteMeals = () => {
-	if (process.client) {
-		favoriteMeals.value = JSON.parse(localStorage.getItem('favoriteMeals'))
-	}
+onMounted(() => getMeals());
+
+const getMeals = () => {
+	meals.value = savedMeals();
 }
+
+const favoriteMeals = computed(() => {
+	if (!searchValue.value) {
+		return meals.value;
+	}
+
+	const processedSearchValue = searchValue.value.trim().toLowerCase();
+
+	return meals.value.filter(({ strMeal }) => strMeal.toLowerCase().includes(processedSearchValue));
+})
 </script>
 
 <template>
 	<div class="container">
 		<h1>Favorites</h1>
+		<form
+			class="d-flex"
+			role="search"
+		>
+			<input
+				v-model="searchValue"
+				class="form-control me-2"
+				type="search"
+				placeholder="Search"
+				aria-label="Search"
+			>
+		</form>
 		<div>
 			<h5
 				v-if="!favoriteMeals || (favoriteMeals.length === 0)"
@@ -31,7 +54,7 @@ const getFavoriteMeals = () => {
 					<recipe-card
 						:recipe="recipe"
 						:tiny="true"
-						@on-change-favorites="getFavoriteMeals"
+						@on-change-favorites="getMeals"
 					/>
 				</template>
 			</div>

@@ -28,26 +28,17 @@ const handleFavorites = () => {
 const iconColor = () => isMealInFavorites(recipe.idMeal)
 	? 'color: rgb(255, 0, 0); font-size: 2rem; cursor: pointer'
 	: 'font-size: 2rem; cursor: pointer';
-const iconTitle = () => isMealInFavorites(recipe.idMeal) ? 'Remove from favorites' : 'Save to favorites';
 </script>
 
 <template>
-	<!--	tooltip does not work-->
 	<div
 		class="text-end"
 		@click="handleFavorites"
 	>
-		<button
-			type="button"
-			class="btn"
-			data-bs-toggle="tooltip"
-			:data-bs-title="iconTitle()"
-		>
-			<i
-				v-if="!isListChanging"
-				class="bi bi-star"
-				:style="iconColor()"
-			/>
-		</button>
+		<i
+			v-if="!isListChanging"
+			class="bi bi-star"
+			:style="iconColor()"
+		/>
 	</div>
 </template>

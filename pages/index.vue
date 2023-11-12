@@ -18,27 +18,23 @@ const { pending, error } = useAsyncData('meal', async () => {
 <template>
 	<div class="container-fluid">
 		<h1>Random recipe app</h1>
-		<div
-			v-if="pending"
-			class="d-flex justify-content-center"
-		>
-			<div
-				class="spinner-grow"
-				style="width: 3rem; height: 3rem"
-				role="status"
-			>
-				<span
-					class="visually-hidden"
+		<client-only>
+			<div v-if="pending">
+				<h3>Loading</h3>
+				<div
+					class="spinner-grow"
+					style="width: 3rem; height: 3rem;"
+					role="status"
 				>
-					Loading...
-				</span>
+					<span class="visually-hidden">Loading...</span>
+				</div>
 			</div>
-		</div>
-		<div v-else-if="error">
-			Error fetching meal
-		</div>
-		<div v-else>
-			<recipe-card :recipe="randomMeal"/>
-		</div>
+			<div v-else-if="error">
+				<h3>Error fetching meal</h3>
+			</div>
+			<div v-else>
+				<recipe-card :recipe="randomMeal"/>
+			</div>
+		</client-only>
 	</div>
 </template>

@@ -14,7 +14,7 @@ export default {
 		const router = useRouter();
 		const prevPage = route.params.source;
 		const recipe = prevPage === 'index'
-			? useRandomMeal().randomMeal
+			? useRandomMeal().randomMeal.value
 			: getMealFromFavoritesList(route.params.id);
 
 		return { recipe, prevPage, router };
@@ -47,8 +47,11 @@ export default {
 			if (isMealInFavorites(this.recipe.idMeal)) {
 				removeFromFavorites(this.recipe.idMeal);
 				this.$nextTick(() => {
-					const path = this.prevPage === 'index' ? '/' : `/${this.prevPage}`;
-					this.router.push(path);
+					if (this.prevPage === 'index') {
+						return;
+					}
+
+					this.router.push(`/${this.prevPage}`);
 				})
 			} else {
 				addToFavorites(this.recipe);
@@ -73,35 +76,30 @@ export default {
 </script>
 
 <template>
-	<div>
-		<template v-if="!recipe">
-			<div class="container my-2">
+	<div class="container my-2">
+		<client-only>
+			<div v-if="!recipe">
 				<div
 					class="spinner-grow"
-					style="width: 3rem; height: 3rem"
+					style="width: 3rem; height: 3rem;"
 					role="status"
 				>
-					<span
-						class="visually-hidden"
-					>
-						Loading...
-					</span>
+					<span class="visually-hidden">Loading...</span>
 				</div>
 			</div>
-		</template>
-		<template v-else>
-			<div class="container my-2">
-				<h1 class="my-4">
+			<div v-else>
+				<h2 class="my-4">
 					{{ recipe.strMeal }}
 					<small>
-						<a
+						<nuxt-link
 							class="text-body-secondary fs-6"
-							:href="recipe.strSource"
+							:to="recipe.strSource"
+							target="blank"
 						>
 							Original recipe source
-						</a>
+						</nuxt-link>
 					</small>
-				</h1>
+				</h2>
 				<div class="card p-4">
 					<favorite-icon
 						:recipe="recipe"
@@ -113,21 +111,19 @@ export default {
 								<h3 class="ps-3 fst-italic text-body-secondary">
 									Ingredients:
 								</h3>
-								<recipe-ingredients :recipe="recipe"/>
+								<recipe-ingredients :recipe="recipe" />
 							</div>
 							<div class="card-text col-md-8 p-4">
 								<h3 class="ps-3">
 									Steps:
 								</h3>
-								<ol>
-									<li
-										v-for="(step, idx) in processedInstructions"
-										:key="idx"
-										class="pb-3"
-									>
-										{{ step }}
-									</li>
-								</ol>
+								<p
+									v-for="(step, idx) in processedInstructions"
+									:key="idx"
+									class="pb-3"
+								>
+									{{ step }}
+								</p>
 								<button
 									v-if="!isListChanging"
 									type="button"
@@ -149,6 +145,6 @@ export default {
 					</div>
 				</div>
 			</div>
-		</template>
+		</client-only>
 	</div>
 </template>
