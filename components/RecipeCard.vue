@@ -39,9 +39,7 @@ const route = useRoute();
 					<h5 class="card-title">
 						{{ recipe.strMeal }}
 					</h5>
-					<template v-if="!tiny && (route.name === 'index') && ('idMeal' in recipe)">
-						<recipe-ingredients :recipe="recipe"/>
-					</template>
+					<slot />
 					<button
 						type="button"
 						class="btn btn-info w-100"

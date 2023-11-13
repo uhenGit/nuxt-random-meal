@@ -7,12 +7,16 @@ const { pending, error } = useAsyncData('meal', async () => {
 		const { meals } = await $fetch('https://www.themealdb.com/api/json/v1/1/random.php');
 
 		if (!meals || meals.length === 0) {
-			throw createError({ status: 404, statusText: 'There is no meal was found', fatal: true });
+			throw createError({ status: 404, message: 'There is no meal was found', fatal: true });
 		}
 
 		await setRandomMeal(meals[0]);
 	}
 });
+
+if (error && error.value) {
+	throw createError({ status: 404, message: 'Error fetching the data', fatal: true });
+}
 </script>
 
 <template>
@@ -29,11 +33,10 @@ const { pending, error } = useAsyncData('meal', async () => {
 					<span class="visually-hidden">Loading...</span>
 				</div>
 			</div>
-			<div v-else-if="error">
-				<h3>Error fetching meal</h3>
-			</div>
 			<div v-else>
-				<recipe-card :recipe="randomMeal"/>
+				<recipe-card :recipe="randomMeal">
+					<recipe-ingredients :recipe="randomMeal" />
+				</recipe-card>
 			</div>
 		</client-only>
 	</div>
