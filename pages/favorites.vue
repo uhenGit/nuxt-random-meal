@@ -11,6 +11,10 @@ const getMeals = () => {
 	meals.value = savedMeals();
 }
 
+const isFavsExist = computed(() => {
+	return meals.value.length > 0;
+})
+
 const favoriteMeals = computed(() => {
 	if (!searchValue.value) {
 		return meals.value;
@@ -30,8 +34,9 @@ const favoriteMeals = computed(() => {
 			role="search"
 		>
 			<input
+				v-if="isFavsExist"
 				v-model="searchValue"
-				class="form-control me-2"
+				class="form-control mx-2"
 				type="search"
 				placeholder="Search"
 				aria-label="Search"
