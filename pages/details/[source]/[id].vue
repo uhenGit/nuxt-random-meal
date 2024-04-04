@@ -1,5 +1,5 @@
 <script>
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { addToFavorites, isMealInFavorites, removeFromFavorites, savedMeals } from "~/utils/index.js";
 import { useRandomMeal } from "~/composables/states.js";
 
@@ -11,13 +11,12 @@ export default {
 
 	setup() {
 		const route = useRoute();
-		const router = useRouter();
 		const prevPage = route.params.source;
 		const recipe = prevPage === 'index'
 			? useRandomMeal().randomMeal.value
 			: getMealFromFavoritesList(route.params.id);
 
-		return { recipe, prevPage, router };
+		return { recipe, prevPage };
 	},
 
 	data() {
@@ -28,6 +27,7 @@ export default {
 
 	computed: {
 		processedInstructions() {
+			// some of the original recipes use different line breaks
 			const matchedString = this.recipe?.strInstructions?.includes('\r\n\r\n') ? '\r\n\r\n' : '\r\n';
 
 			return this.recipe?.strInstructions?.split(matchedString).filter((step) => step !== '');
@@ -36,7 +36,7 @@ export default {
 
 	mounted() {
 		if (!('idMeal' in this.recipe)) {
-			this.router.push('/');
+			this.$router.push('/');
 		}
 	},
 
@@ -51,7 +51,7 @@ export default {
 						return;
 					}
 
-					this.router.push(`/${this.prevPage}`);
+					this.$router.push(`/${this.prevPage}`);
 				})
 			} else {
 				addToFavorites(this.recipe);
